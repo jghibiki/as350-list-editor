@@ -1,5 +1,5 @@
 
-import { Component, Show, createEffect, createSignal } from 'solid-js';
+import { Component, Show, createEffect, createSignal, batch } from 'solid-js';
 import { Container, Navbar, Nav, NavDropdown, Dropdown, Row, Col} from 'solid-bootstrap'
 import {useForceStore} from './ForceStore';
 import {useActiveForceStore} from './ActiveForceStore';
@@ -13,13 +13,17 @@ function NavBar(){
 
 
     const handleNewList = () => { // TODO add a confirm if a force is loaded
-        activeForce.setForce({} as Force)
-        activeForce.setForceType("new")
+        batch(() => {
+            activeForce.setForce({} as Force)
+            activeForce.setForceType("new")
+        })
     }
 
     const handleExistingList = (force) => { // TODO Add a confirm if a force is loaded
-        activeForce.setForce(force as Force)
-        activeForce.setForceType("existing")
+        batch(() => {
+            activeForce.setForce(force as Force)
+            activeForce.setForceType("existing")
+        })
     }
 
     return(
