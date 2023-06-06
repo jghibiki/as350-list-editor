@@ -9,4 +9,5 @@ export default defineConfig({
   build: {
     target: 'esnext',
   },
+  base: "/as350-list-editor/"
 });
