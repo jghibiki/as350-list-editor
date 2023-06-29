@@ -1,4 +1,4 @@
-import { createSignal, createContext, useContext } from "solid-js";
+import { createSignal, createContext, useContext, batch } from "solid-js";
 import Force from '../entities/Force'
 import {createStorage} from '@solid-primitives/storage'
 
@@ -20,18 +20,18 @@ export function ActiveForceStoreProvider(props){
 
 
     const saveActiveForce = () => {
-        let savedForces = null
+        let savedForces = JSON.parse(localStore.savedForces)
 
-        if("savedForces" in localStore){
-            let index = localStore.savedForces.map(el => el.name).indexOf()
+        if(savedForces != null){
+            let index = savedForces.map(el => el.name).indexOf(activeForce().name)
             if(index === -1){ // will need to insert
                 savedForces = [
-                    ...localStore.savedForces,
+                    ...savedForces,
                     activeForce()
                 ]
             }
             else { // will need to update
-                savedForces = localStore.savedForces
+                savedForces = savedForces
                 savedForces[index] = activeForce()
             }
         }
@@ -41,6 +41,28 @@ export function ActiveForceStoreProvider(props){
 
         setLocalStore("savedForces", JSON.stringify(savedForces))
         setHasUnsavedEdits(false)
+    }
+
+    const deleteActiveForce = () => {
+        let savedForces = JSON.parse(localStore.savedForces)
+
+        if(savedForces != null){
+            let index = savedForces.map(el => el.name).indexOf(activeForce().name)
+            if(index !== -1){ // we found the active Force
+                let updated = [
+                    ...savedForces
+                ]
+                updated.splice(index, 1)
+                savedForces = updated
+            }
+        }
+
+        batch(()=>{
+            setLocalStore("savedForces", JSON.stringify(savedForces))
+            setHasUnsavedEdits(false)
+            setActiveForce(null)
+            setForceType(null)
+        })
     }
 
     const activeForceManager = {
@@ -53,7 +75,8 @@ export function ActiveForceStoreProvider(props){
         listForces: savedForces,
         saveActiveForce: saveActiveForce,
         listValid: listValid,
-        setListValid: setListValid
+        setListValid: setListValid,
+        deleteActiveForce: deleteActiveForce,
     }
 
     return (

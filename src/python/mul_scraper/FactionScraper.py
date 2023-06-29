@@ -76,7 +76,6 @@ class FactionScraper:
                         if table is None: continue
                         unit_table_rows = table.find("tr")
                         if unit_table_rows is None: continue
-                        True
                         for row in unit_table_rows:
                             cols = row.find("td")
                             anchor = cols[0].find("a", first=True)

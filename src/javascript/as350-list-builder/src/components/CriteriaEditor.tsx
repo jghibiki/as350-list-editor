@@ -148,7 +148,7 @@ export function CriteriaEditor(props){
                 <Form.Group className="mb-3">
                     <Form.Label>Search Query</Form.Label>
                     {/*TODO add validation for citeria fields*/}
-                    <Form.Control onInput={[handleUpdateFuzzy, criterion]} />
+                    <Form.Control onInput={[handleUpdateFuzzy, criterion]} placeholder={criterion.query} />
                 </Form.Group>
                 <Row style={{"text-align": "right"}}>
                     <Col>
@@ -322,7 +322,7 @@ export function AddCriteriaButton(){
                 filterType: "fuzzy",
                 label: "Abilities",
                 field: "BFAbilities",
-                query: null
+                query: ""
             }
         }
         else if(type === "class"){
@@ -330,7 +330,7 @@ export function AddCriteriaButton(){
                 filterType: "fuzzy",
                 label: "Class",
                 field: "Class",
-                query: null
+                query: ""
             }
         }
         else if(type === "variant"){
@@ -338,7 +338,7 @@ export function AddCriteriaButton(){
                 filterType: "fuzzy",
                 label: "Variant",
                 field: "Variant",
-                query: null
+                query: ""
             }
         }
 

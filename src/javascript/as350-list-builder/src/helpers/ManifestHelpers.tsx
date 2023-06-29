@@ -53,7 +53,7 @@ function findUnitsByFactionAndEra(faction, availabilityEra){
     // find supplemental units too
     if(factionTechBase != null){
         let supplementalList = techBaseToGeneralList[factionTechBase]
-        let supplementalEraData = manifest[factionTechBase][supplementalList]
+        let supplementalEraData = manifest[factionTechBase][supplementalList] || {}
         for(let [era, eraData] of Object.entries(supplementalEraData)){
             if(availabilityEra === era){
                 units = units.concat(eraData)
@@ -107,12 +107,16 @@ function filterUnits(units, searchCriteria){
             })
         }
         else if(criterion.filterType === "fuzzy"){
-            let fuse = new Fuse(units, {
-                keys: [criterion.field]
-            })
-            units = fuse.search(
-                criterion.query
-            ).map(el => el.item)
+            if(criterion.query !== "*"){
+                // only use fuzzy search if the query isn't *
+
+                let fuse = new Fuse(units, {
+                    keys: [criterion.field]
+                })
+                units = fuse.search(
+                    criterion.query
+                ).map(el => el.item)
+            }
         }
     }
 

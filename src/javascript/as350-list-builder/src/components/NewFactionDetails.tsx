@@ -1,4 +1,4 @@
-import { Component, Switch, Match, createEffect, createSignal, For} from 'solid-js';
+import { Component, Switch, Match, createEffect, createSignal, For, batch} from 'solid-js';
 import { Container, Dropdown, Row, Col, Form, FloatingLabel, Button } from 'solid-bootstrap'
 import {useForceStore} from './ForceStore';
 import {useActiveForceStore} from './ActiveForceStore';
@@ -10,87 +10,104 @@ import manifest from '../data/manifest.json'
 function NewFactionDetails(){
 
     const activeForceStore = useActiveForceStore()
+    const [forceName, setForceName] = createSignal<string>(null)
+    const [faction, setFaction] = createSignal<string>(null)
+    const [era, setEra] = createSignal<string>(null)
+    const [isValid, setIsValid] = createSignal(false)
+    const [errorMessage, setErrorMessage] = createSignal<string>(null)
+
+    createEffect(() =>{
+        // TODO add validation logic for force name
+        activeForceStore.getForce()
+
+
+        let fieldsSet = (
+            faction() !== null &&
+            faction() !== undefined &&
+            forceName() !== null &&
+            forceName() !== undefined &&
+            forceName() !== "" &&
+            era() !== undefined &&
+            era() !== null
+        )
+
+        let forceNames = activeForceStore.listForces().map(el=>el.name)
+        let nameIndex = forceNames.indexOf(forceName())
+
+        let nameValid = true
+        let message = ""
+        if(nameIndex !== -1){
+            nameValid = false
+            message = "A force with this name already exists."
+        }
+
+        batch(()=>{
+            setIsValid(
+                fieldsSet && nameValid
+            )
+            setErrorMessage(message)
+        })
+    })
+
 
     const handleSetForceName = (e) => { // TODO add validation to make sure name doesn't match exiting force.
         let value = e.target.value
-        activeForceStore.setForce({
-            ...activeForceStore.getForce(),
-            name: value
-        })
+        setForceName(value)
     }
 
     const handleSetForceFaction = (e) => {
         let value = e.target.value
         if (value === "null") value = null
-        activeForceStore.setForce({
-            ...activeForceStore.getForce(),
-            faction: value,
-            availabilityEra: null,
-            roster: []
-        })
+        setFaction(value)
     }
 
     const handleSetAvailabilityEra = (e) => {
         let value = e.target.value
         if (value === "null") value = null
-        activeForceStore.setForce({
-            ...activeForceStore.getForce(),
-            availabilityEra: value
-        })
+        setEra(value)
     }
 
     const availabilityEraOptions = () => {
-        if(!isFactionSet()){
+        if(disableEraSelect()){
             return []
         }
 
-        let faction = activeForceStore.getForce().faction
         for(const [techBase, data] of Object.entries(manifest)){
-            if(faction in data){
-                return Object.keys(data[faction])
+            if(faction() in data){
+                return Object.keys(data[faction()])
             }
         }
     }
 
-    const isFactionSet = () => {
-        return activeForceStore.getForce() !== null &&
-        activeForceStore.getForce() !== undefined &&
-        activeForceStore.getForce().faction !== null
-    }
-
     const disableEraSelect = () => {
-        return !isFactionSet()
-    }
-
-    const disableSubmit = () => {
-        let force = activeForceStore.getForce()
-        return !(
-            activeForceStore.getForce() !== null &&
-            activeForceStore.getForce() !== undefined  &&
-            activeForceStore.getForce().faction !== null &&
-            activeForceStore.getForce().faction !== undefined &&
-            activeForceStore.getForce().name !== null &&
-            activeForceStore.getForce().name !== undefined &&
-            activeForceStore.getForce().name !== "" &&
-            activeForceStore.getForce().availabilityEra !== undefined &&
-            activeForceStore.getForce().availabilityEra !== null
-        )
+        return faction() === null
     }
 
     const handleCreateForce = () =>{
-        // todo: add additional fields
-        activeForceStore.setForce({
-            ...activeForceStore.getForce(),
+        batch(()=>{
+            activeForceStore.setForce({
+                ...activeForceStore.getForce(),
+                availabilityEra: era(),
+                name: forceName(),
+                faction: faction(),
+                roster: []
+            })
+
+            activeForceStore.saveActiveForce()
+            activeForceStore.setForceType("existing")
         })
-
-        activeForceStore.saveActiveForce()
-
-        activeForceStore.setForceType("existing")
     }
 
 
     return (
-        <Form>
+        <Form onSubmit={(e)=>{e.preventDefault()}}>
+            <Show when={()=>!isValid()}>
+                <Row>
+                    <Col>
+                        {errorMessage()}
+                    </Col>
+                </Row>
+            </Show>
             <Row>
                 <Col>
                     <Form.Group class="mb-3" as={Col}>
@@ -124,7 +141,7 @@ function NewFactionDetails(){
             <Row>
                 <Col></Col>
                 <Col>
-                    <Button  variant={disableSubmit() ? "outline-secondary": "primary"} disabled={disableSubmit()} onClick={handleCreateForce}>Create Force</Button>
+                    <Button  variant={!isValid() ? "outline-secondary": "primary"} disabled={!isValid()} onClick={handleCreateForce}>Create Force</Button>
                 </Col>
                 <Col></Col>
             </Row>

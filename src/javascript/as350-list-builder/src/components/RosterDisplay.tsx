@@ -21,16 +21,12 @@ export function RosterDisplay(){
             if(basePV <= 14){
                 adjustment = 1
             }
-            if(basePV <= 24){
-                adjustment = 2
-            }
             else{
-                let remaining = Math.max(basePV - 24, 0)
-                let a = Math.floor(remaining / 10)
-                adjustment = a + 2
+                let adjustedPV = basePV - 14
+                adjustment = Math.ceil(adjustedPV / 10) + 1
             }
             let calcd = basePV - (adjustment * Math.abs(delta))
-            return Math.max(calcd, 1)
+            return Math.max(calcd,1)
         }
         else if(delta > 0){ // better skill increase PV
             let adjustment = 0
@@ -38,11 +34,12 @@ export function RosterDisplay(){
                 adjustment = 1
             }
             else{
-                let remaining = Math.max(basePV - 7, 0)
-                let a = Math.floor(remaining / 4)
-                adjustment = a + 1
+                let adjustedPV = basePV - 7
+                adjustment = Math.ceil(adjustedPV / 5) + 1
             }
-            return basePV + (adjustment * Math.abs(delta))
+
+            let calcd = basePV + (adjustment * Math.abs(delta))
+            return Math.max(calcd,1)
         }
     }
 
@@ -145,9 +142,9 @@ export function RosterDisplay(){
             if(roster() === null) return false
             let sum =  roster().map(
                 unit => {
+                    let abilities = unit.BFAbilities || ""
                     let sum = (
-                        unit
-                            .BFAbilities
+                        abilities
                             .toLowerCase()
                             .split(",")
                             .filter(a=> a.startsWith("art"))
@@ -172,9 +169,9 @@ export function RosterDisplay(){
             if(roster() === null) return false
             let sum =  roster().map(
                 unit => {
+                    let abilities = unit.BFAbilities || ""
                     let sum = (
-                        unit
-                            .BFAbilities
+                        abilities
                             .toLowerCase()
                             .split(",")
                             .filter(a=> a.startsWith("jmps"))
@@ -269,13 +266,27 @@ export function RosterDisplay(){
                     <For each={roster()}>{(unit, i) =>
                         <Row style={{"margin-top": "20px"}}>
                             <Col>
-                                <UnitDisplay unit={unit} pointsField={"calculatedPoints"}>
+                                <UnitDisplay
+                                    unit={unit}
+                                    pointsField={"calculatedPoints"}
+                                    header={
+                                        <Button
+                                            onClick={[handleRemoveUnit, i]}
+                                            style={{"float": "right"}}
+                                            className="btn-outline-danger btn"
+                                        >
+                                            ❌
+                                        </Button>
+                                    }
+
+                                    >
                                     <Row>
                                         <Col>
-                                            {unit.pilotSkill} - {unit.calculatedPoints}
-                                        </Col>
-                                        <Col>
-                                            <FloatingLabel label="Pilot Skill" style={{"max-width": "150px"}}>
+                                            <Form.Group>
+
+                                                <Form.Label>
+                                                    Pilot Skill
+                                                </Form.Label>
                                                 <Form.Select value={unit.pilotSkill} onChange={handleSelectPilotSkill(i())}>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
@@ -284,15 +295,8 @@ export function RosterDisplay(){
                                                     <option value="6">6</option>
                                                     <option value="7">7</option>
                                                 </Form.Select>
-                                            </FloatingLabel>
-                                        </Col>
-                                        <Col>
-                                            <Button
-                                                onClick={[handleRemoveUnit, i]}
-                                                style={{"float": "right"}}
-                                            >
-                                                Remove Unit
-                                            </Button>
+
+                                            </Form.Group>
                                         </Col>
                                      </Row>
                                 </UnitDisplay>

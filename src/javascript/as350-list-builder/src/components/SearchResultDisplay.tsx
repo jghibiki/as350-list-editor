@@ -82,11 +82,19 @@ export function SearchResultDisplay(props){
                         <For each={pageResults()}>{(unit, i) =>
                             <Row style={{"margin-top": "20px"}}>
                                 <Col>
-                                    <UnitDisplay unit={unit}>
-                                        <Button style={{"float":"right"}} onClick={[handleAddToForce, unit]}>
-                                            Add to List
-                                        </Button>
-                                    </UnitDisplay>
+                                    <UnitDisplay
+                                        unit={unit}
+                                        header={
+                                            <Button
+                                                style={{"float":"right"}}
+                                                onClick={[handleAddToForce, unit]}
+                                                className="btn btn-outline-primary"
+                                            >
+                                               ➕
+                                            </Button>
+                                        }
+
+                                    />
                                 </Col>
                             </Row>
                         }</For>

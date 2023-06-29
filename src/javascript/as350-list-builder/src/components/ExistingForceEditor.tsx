@@ -49,6 +49,13 @@ function ExistingForceEditor(){
         setSearchResults(units)
     }
 
+    const handleDeleteForce = () => {
+        let shouldDelete = confirm("Are you sure you wish to delete this force?")
+
+        if(shouldDelete){
+            activeForceStore.deleteActiveForce()
+        }
+    }
 
     return (
         <div>
@@ -78,6 +85,13 @@ function ExistingForceEditor(){
                             onClick={handleSaveForce}
                         >
                             Save Force
+                        </Button>
+                        <Button
+                            class="mx-auto"
+                            style={{"margin-top": "5px"}}
+                            onClick={handleDeleteForce}
+                        >
+                            Delete Force
                         </Button>
                     </Stack>
                 </Col>
@@ -112,7 +126,7 @@ function ExistingForceEditor(){
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <Form style={{"padding": "15px", "text-align": "left"}}>
+                                        <Form style={{"padding": "15px", "text-align": "left"}} onSubmit={(e)=>{e.preventDefault()}}>
                                             <For each={Object.keys(criteriaStore.get())}>{(criterion, i) =>
                                                 <CriteriaEditor criterion={criterion}/>
                                             }</For>
