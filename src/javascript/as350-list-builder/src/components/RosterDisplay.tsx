@@ -277,9 +277,7 @@ export function RosterDisplay(){
                                         >
                                             ❌
                                         </Button>
-                                    }
-
-                                    >
+                                    }>
                                     <Row>
                                         <Col>
                                             <Form.Group>
@@ -295,7 +293,6 @@ export function RosterDisplay(){
                                                     <option value="6">6</option>
                                                     <option value="7">7</option>
                                                 </Form.Select>
-
                                             </Form.Group>
                                         </Col>
                                      </Row>

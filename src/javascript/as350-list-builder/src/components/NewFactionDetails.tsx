@@ -1,5 +1,5 @@
 import { Component, Switch, Match, createEffect, createSignal, For, batch} from 'solid-js';
-import { Container, Dropdown, Row, Col, Form, FloatingLabel, Button } from 'solid-bootstrap'
+import { Container, Dropdown, Row, Col, Form, FloatingLabel, Button, InputGroup  } from 'solid-bootstrap'
 import {useForceStore} from './ForceStore';
 import {useActiveForceStore} from './ActiveForceStore';
 import Force from '../entities/Force'
@@ -14,6 +14,7 @@ function NewFactionDetails(){
     const [faction, setFaction] = createSignal<string>(null)
     const [era, setEra] = createSignal<string>(null)
     const [isValid, setIsValid] = createSignal(false)
+    const [forceNameInvalid, setForceNameInvalid] = createSignal(false)
     const [errorMessage, setErrorMessage] = createSignal<string>(null)
 
     createEffect(() =>{
@@ -40,12 +41,17 @@ function NewFactionDetails(){
             nameValid = false
             message = "A force with this name already exists."
         }
+        if(forceName() === null || forceName() === ""){
+            nameValid = false
+            message = "Please provide a force name."
+        }
 
         batch(()=>{
             setIsValid(
                 fieldsSet && nameValid
             )
             setErrorMessage(message)
+            setForceNameInvalid(!nameValid)
         })
     })
 
@@ -101,18 +107,16 @@ function NewFactionDetails(){
 
     return (
         <Form onSubmit={(e)=>{e.preventDefault()}}>
-            <Show when={()=>!isValid()}>
-                <Row>
-                    <Col>
-                        {errorMessage()}
-                    </Col>
-                </Row>
-            </Show>
             <Row>
                 <Col>
                     <Form.Group class="mb-3" as={Col}>
                         <Form.Label>Force Name</Form.Label>
-                        <Form.Control type="text" placeholder="My Force"  onKeyUp={handleSetForceName}/>
+                        <InputGroup hasValidation>
+                            <Form.Control type="text" placeholder="My Force"  onKeyUp={handleSetForceName} isInvalid={forceNameInvalid()}/>
+                            <Form.Control.Feedback type="invalid">
+                                {errorMessage()}
+                            </Form.Control.Feedback>
+                        </InputGroup>
                     </Form.Group>
                 </Col>
                 <Form.Group as={Col} class="mb-3">
