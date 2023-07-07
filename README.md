@@ -1,5 +1,16 @@
 #AS 350 list builder
 
+## Implemented Validations
+- Automatically excludes experimental and unique units
+- Should correctly associate the general lists: IS General/IS Clan/HW Clan/Periphery units with qualifying factions.
+- Validates number of `ART` units in roster.
+- Validates number of `JMPS` units in roster.
+- Validates roster is within 350 PV
+- Validates number of ProtoMechs
+- Validates number of Infantry
+- Validates number of Conventional Vehicles
+- Validates total number of Mechs (BatleMechs, ProtoMechs, IndustrialMechs)
+
 ## TODO
 - add a modal popup with planned features list.
 - add collection manager to allow adding a list of "chassis" that a user has in their collection
