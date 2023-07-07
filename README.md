@@ -18,7 +18,7 @@
   - could also track if the model is painted
   - could also support a strict mode where the exact model can be tracked instead of just the chassis
   - allow filtering search results on model collection
-- Add list export
+- Add list export (pdf, and json for backup/restore)
   - probably need a coversheet with the roster details.
   - Possibly use print style sheets that load the unit cards
 - add some indicator for the last time data was scraped from the MUL
