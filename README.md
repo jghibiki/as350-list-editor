@@ -1,4 +1,4 @@
-#AS 350 list builder
+# AS 350 list builder
 
 ## Implemented Validations
 - Automatically excludes experimental and unique units
@@ -10,6 +10,10 @@
 - Validates number of Infantry
 - Validates number of Conventional Vehicles
 - Validates total number of Mechs (BatleMechs, ProtoMechs, IndustrialMechs)
+
+## Missing Validations
+- Chassis limit 
+- Variant limit
 
 ## TODO
 - add a modal popup with planned features list.
@@ -26,5 +30,3 @@
 - Add a means of building 200 point sub-lists, and adding notes about them.
   - Stealing an idea from discord, also add a tool for generating combinations of ~200 points, and then allows saving 
     if the user likes the generated option.
-
-- 
