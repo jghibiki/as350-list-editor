@@ -27,6 +27,7 @@ export function SearchResultDisplay(props){
             getPage(0, pageSize)
         )
 
+        setPage(1)
     })
 
     const getPage = (idx, page) => {

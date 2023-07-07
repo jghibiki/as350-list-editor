@@ -8,6 +8,7 @@ export function RosterDisplay(){
     const activeForceStore = useActiveForceStore()
     const [reason, setReason] = createSignal("")
     const [roster, setRoster] = createSignal(null)
+    const [allowSavingInvalid, setAllowSavingInvalid] = createSignal(false)
 
     const calculatePoints = (unit) => {
         let delta = 4 - unit.pilotSkill
@@ -214,7 +215,7 @@ export function RosterDisplay(){
        if(valid){
             setReason("")
        }
-       activeForceStore.setListValid(valid)
+       activeForceStore.setListValid(allowSavingInvalid() || valid)
 
        return valid
     }
@@ -239,6 +240,11 @@ export function RosterDisplay(){
         activeForceStore.setHasUnsavedEdits(true)
     }
 
+    const handleUpdateSavingInvalid = (e) => {
+        let value = e.target.checked
+        setAllowSavingInvalid(value)
+    }
+
     return (
         <>
             <Switch>
@@ -246,23 +252,35 @@ export function RosterDisplay(){
                     No units added yet.
                 </Match>
                 <Match when={roster().length > 0}>
-                    <p>
-                        Point Total: {pointTotal()} ({percentPoints()}%) / 350
-                    </p>
-                    <p>
-                        <span>Validation Status: </span>
-                        <Switch>
-                            <Match when={validationStatus()}>
-                                Valid
-                            </Match>
-                            <Match when={!validationStatus()}>
-                                <span>Invalid</span>
-                                <p style={{"color": "red"}}>
-                                    {reason()}
-                                </p>
-                            </Match>
-                        </Switch>
-                    </p>
+                    <div>
+                        <p>
+                            Point Total: {pointTotal()} ({percentPoints()}%) / 350
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            <span>Validation Status: </span>
+                            <Switch>
+                                <Match when={validationStatus()}>
+                                    Valid
+                                </Match>
+                                <Match when={!validationStatus()}>
+                                    <span>Invalid</span>
+                                    <p style={{"color": "red"}}>
+                                        {reason()}
+                                    </p>
+                                </Match>
+                            </Switch>
+                        </p>
+                    </div>
+                    <div style={{"margin-bottom": "8px"}}>
+                        <Form.Check
+                            type="switch"
+                            label="Allow saving invalid lists."
+                            checked={allowSavingInvalid()}
+                            onChange={handleUpdateSavingInvalid}
+                          />
+                    </div>
                     <For each={roster()}>{(unit, i) =>
                         <Row style={{"margin-top": "20px"}}>
                             <Col>
@@ -271,7 +289,7 @@ export function RosterDisplay(){
                                     pointsField={"calculatedPoints"}
                                     header={
                                         <Button
-                                            onClick={[handleRemoveUnit, i]}
+                                            onClick={[handleRemoveUnit, i()]}
                                             style={{"float": "right"}}
                                             className="btn-outline-danger btn"
                                         >

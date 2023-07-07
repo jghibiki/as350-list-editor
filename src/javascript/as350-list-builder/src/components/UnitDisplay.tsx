@@ -18,14 +18,62 @@ export function UnitDisplay(props){
         return "https://masterunitlist.azurewebsites.net/Unit/Card/" + unit().Id + "?skill=4"
     }
 
+    const unitAbilities = () => {
+        let abilities = unit().BFAbilities
+        if(abilities !== null && abilities !== undefined){
+            return abilities.replaceAll(",", ", ")
+        }
+        else {
+            return ""
+        }
+    }
+
+    const validUnitVariant = () => {
+        return !(
+            unit().Variant === "" ||
+            unit().Variant === " " ||
+            unit().Variant === null
+        )
+    }
+
+    const tmm = () => {
+        let move = parseInt(
+            unit()
+            .BFMove
+            .replaceAll("\"", "")
+            .split("/")[0]
+        )
+        if(move < 6){
+            return 0
+        }
+        else if(move >= 6 && move <= 8){
+            return 1
+        }
+        else if(move >= 10 && move <= 12){
+            return 2
+        }
+        else if(move >= 14 && move <= 18){
+            return 3
+        }
+        else if(move >= 14 && move <= 18){
+            return 3
+        }
+        else if(move >= 19 && move <= 34){
+            return 4
+        }
+        else {
+            return 5
+        }
+    }
+
     return (
         <Card>
             <Card.Header>
                 <Row>
                     <Col>
                         {unit().Class}
-                        <Show when={unit().Variant !== "" && unit().Variant !== null}>
-                                &nbsp;({unit().Variant})
+                        <Show when={validUnitVariant()}>
+                                &nbsp;- {unit().Variant}
                         </Show>
                     </Col>
                     <Show when={props.header !== undefined && props.header !== null}>
@@ -45,6 +93,20 @@ export function UnitDisplay(props){
                         </Row>
                         <Row>
                             <Col>
+                                <Row>
+                                    <Col className="text-center">
+                                        <strong>Type</strong>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col className="text-center">
+                                        {unit().Type === undefined ? "" : unit().Type.Name}
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
                                  <strong>Overheat:</strong> {unit().BFOverheat}
                             </Col>
                         </Row>
@@ -54,12 +116,12 @@ export function UnitDisplay(props){
                             <Col>
                                 <Row>
                                     <Col className="text-center">
-                                        <strong>Type</strong>
+                                        <strong>Role</strong>
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col className="text-center">
-                                        {unit().Type === undefined ? "" : unit().Type.Name}
+                                        {unit().Role.Name}
                                     </Col>
                                 </Row>
                             </Col>
@@ -78,24 +140,24 @@ export function UnitDisplay(props){
                             <Col>
                                 <Row>
                                     <Col className="text-center">
-                                        <strong>Role</strong>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col className="text-center">
-                                        {unit().Role.Name}
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col>
-                                <Row>
-                                    <Col className="text-center">
                                         <strong>Move</strong>
                                     </Col>
                                 </Row>
                                 <Row>
                                     <Col className="text-center">
                                         {unit().BFMove}
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col>
+                                <Row>
+                                    <Col className="text-center">
+                                        <strong>TMM</strong>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col className="text-center">
+                                        {tmm()}
                                     </Col>
                                 </Row>
                             </Col>
@@ -176,11 +238,12 @@ export function UnitDisplay(props){
                             </Col>
                             <Col/>
                         </Row>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <strong>Abilities:</strong> {() => unit().BFAbilities.replaceAll(",", ", ")}
+                        <hr style={{"border-top": "2px solid black", "margin-top": "4px", "margin-bottom": "4px"}}/>
+                        <Row>
+                            <Col>
+                                <strong>Abilities:</strong> {unitAbilities()}
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
             </Card.Body>

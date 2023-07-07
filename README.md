@@ -10,4 +10,10 @@
 - Add list export
   - probably need a coversheet with the roster details.
   - Possibly use print style sheets that load the unit cards
-- add some indicator for the last time data was scraped.
+- add some indicator for the last time data was scraped from the MUL
+- need to figure out how to apply the chassis / variant validation, as those fields are not clean in the MUL data.
+- Add a means of building 200 point sub-lists, and adding notes about them.
+  - Stealing an idea from discord, also add a tool for generating combinations of ~200 points, and then allows saving 
+    if the user likes the generated option.
+
+- 
