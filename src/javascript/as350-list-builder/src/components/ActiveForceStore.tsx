@@ -1,10 +1,10 @@
 import { createSignal, createContext, useContext, batch } from "solid-js";
 import Force from '../entities/Force'
-import {createStorage} from '@solid-primitives/storage'
+import { createStorage } from '@solid-primitives/storage'
 
 const ActiveForceStoreContext = createContext()
 
-export function ActiveForceStoreProvider(props){
+export function ActiveForceStoreProvider(props) {
 
     const [localStore, setLocalStore, {
         remove,
@@ -16,15 +16,15 @@ export function ActiveForceStoreProvider(props){
     const [hasUnsavedEdits, setHasUnsavedEdits] = createSignal<bool>(false)
     const [listValid, setListValid] = createSignal(false)
 
-    const savedForces = () => JSON.parse(localStore.savedForces) as Array<Force>
+    const savedForces = () => JSON.parse(localStore.savedForces) as Array<Force> || Array<Force>()
 
 
     const saveActiveForce = () => {
         let savedForces = JSON.parse(localStore.savedForces)
 
-        if(savedForces != null){
+        if (savedForces != null) {
             let index = savedForces.map(el => el.name).indexOf(activeForce().name)
-            if(index === -1){ // will need to insert
+            if (index === -1) { // will need to insert
                 savedForces = [
                     ...savedForces,
                     activeForce()
@@ -46,9 +46,9 @@ export function ActiveForceStoreProvider(props){
     const deleteActiveForce = () => {
         let savedForces = JSON.parse(localStore.savedForces)
 
-        if(savedForces != null){
+        if (savedForces != null) {
             let index = savedForces.map(el => el.name).indexOf(activeForce().name)
-            if(index !== -1){ // we found the active Force
+            if (index !== -1) { // we found the active Force
                 let updated = [
                     ...savedForces
                 ]
@@ -57,7 +57,7 @@ export function ActiveForceStoreProvider(props){
             }
         }
 
-        batch(()=>{
+        batch(() => {
             setLocalStore("savedForces", JSON.stringify(savedForces))
             setHasUnsavedEdits(false)
             setActiveForce(null)
@@ -86,4 +86,4 @@ export function ActiveForceStoreProvider(props){
     )
 }
 
-export function useActiveForceStore() { return useContext(ActiveForceStoreContext)}
+export function useActiveForceStore() { return useContext(ActiveForceStoreContext) }

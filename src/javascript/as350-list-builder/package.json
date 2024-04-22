@@ -10,14 +10,14 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "vite": "^4.1.1",
-    "vite-plugin-solid": "^2.5.0"
+    "vite": "^4.5.3",
+    "vite-plugin-solid": "^2.10.2"
   },
   "dependencies": {
-    "@solid-primitives/pagination": "^0.2.7",
+    "@solid-primitives/pagination": "^0.2.12",
     "@solid-primitives/storage": "^1.3.11",
     "fuse.js": "^6.6.2",
-    "solid-bootstrap": "^1.0.13",
-    "solid-js": "^1.6.10"
+    "solid-bootstrap": "^1.0.19",
+    "solid-js": "^1.8.16"
   }
 }
